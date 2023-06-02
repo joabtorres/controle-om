@@ -5,7 +5,7 @@
             <ol class="breadcrumb">
                 <li><a href="<?php echo BASE_URL ?>/home"><i class="fa fa-tachometer-alt"></i> Inicial</a></li>
                 <li><a href="<?php echo BASE_URL ?>/relatorio/manutencao"><i class="fa fa-list-alt"></i> Relatório de Ordem de Manutenção</a></li>
-                <li><a href="<?php echo BASE_URL ?>/manutencao/index/<?php echo !empty($formCad['id']) ? $formCad['id'] : '' ?>"><i class="fa fa-user"></i> <?php echo !empty($formCad['id']) ? "Nº: " . str_pad($formCad['id'], 4, '0', STR_PAD_LEFT) : '' ?></a></li>
+                <li><a href="<?php echo BASE_URL ?>/manutencao/index/<?php echo !empty($formCad['id']) ? $formCad['id'] : '' ?>"><i class="fas fa-cogs"></i> <?php echo !empty($formCad['id']) ? "Nº: " . str_pad($formCad['id'], 4, '0', STR_PAD_LEFT) : '' ?></a></li>
                 <li class="active"><i class="fa fa-edit"></i>Editar Manutenção</li>
             </ol>
         </div>

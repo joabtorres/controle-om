@@ -24,23 +24,8 @@ function mostrarConteudo() {
  */
 $(document).ready(function () {
    mostrarConteudo();
-   $(".select2-js").select2({
-      width: "100%",
-   });
-   $(".date_serach").datepicker({
-      changeYear: true,
-      changeMonth: true,
-      dateFormat: "dd/mm/yy",
-   });
    $(".input-data").mask("00/00/0000");
-   $(".input-altura").mask("0.00 m", { reverse: true });
-   $(".input-hora").mask("00:00:00", { reverse: true });
-   $(".input-idade").mask("##0 anos", { reverse: true });
-   $(".input-pressao").mask("00/00");
-   $(".input_medicao_cm").mask("##0.00 cm", { reverse: true });
-   $(".input_peso_kg").mask("#00.00 kg", { reverse: true });
-   $(".input-glicose").mask("#99 mg/dL", { reverse: true });
-   $(".input-frequencia").mask("#99 bpm", { reverse: true });
+   $(".input-hora").mask("00:00:00");
 });
 /**
  * @author Joab Torres Alencar
