@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 31-Maio-2023 às 23:27
+-- Tempo de geração: 01-Jun-2023 às 23:08
 -- Versão do servidor: 10.4.27-MariaDB
 -- versão do PHP: 8.2.0
 
@@ -90,7 +90,7 @@ CREATE TABLE `manutencao` (
 --
 
 INSERT INTO `manutencao` (`id`, `manutencao`, `celula`, `responsavel`, `duracao`, `status_id`, `created_manutencao`, `updated_manutencao`) VALUES
-(1, 'asdasdasd2222222222', 'Kit Estacionários', '123123212222222222', '01:11:11', 3, '2023-05-30 00:31:00', '2023-06-01 01:45:42'),
+(1, 'asdasdasd2222222222', 'Kit Estacionários', '123123212222222222', '01:11:11', 3, '2023-05-30 00:31:00', '2023-06-02 02:07:39'),
 (3, 'asdasdasd222222222222', 'Laboratório de Eletrônica', '12312321', '01:11:11', 5, '2023-06-01 00:05:12', '2023-06-01 01:52:24');
 
 -- --------------------------------------------------------
@@ -101,13 +101,49 @@ INSERT INTO `manutencao` (`id`, `manutencao`, `celula`, `responsavel`, `duracao`
 
 CREATE TABLE `manutencao_desvio` (
   `id` int(10) UNSIGNED NOT NULL,
-  `maintenance_id` int(10) UNSIGNED NOT NULL,
-  `time` int(11) NOT NULL,
-  `type` varchar(255) NOT NULL,
-  `description` text NOT NULL,
-  `created_detour` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_detour` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp()
+  `manutencao_id` int(10) UNSIGNED NOT NULL,
+  `ordem` varchar(255) NOT NULL,
+  `duracao` int(11) NOT NULL,
+  `tipo` varchar(255) NOT NULL,
+  `descricao` text NOT NULL,
+  `created_desvio` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_desvio` timestamp NULL DEFAULT NULL ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Extraindo dados da tabela `manutencao_desvio`
+--
+
+INSERT INTO `manutencao_desvio` (`id`, `manutencao_id`, `ordem`, `duracao`, `tipo`, `descricao`, `created_desvio`, `updated_desvio`) VALUES
+(1, 3, 'Fim do desvio', 2, 'Meio de Medição', '2', '2023-06-02 01:17:27', '2023-06-02 01:57:49'),
+(2, 3, 'Início do desvio', 20, 'Mão de Obra', '22222222222', '2023-06-02 01:58:27', NULL),
+(3, 3, 'Início do desvio', 1, 'Mão de Obra', '11111111111', '2023-06-02 01:59:11', NULL),
+(4, 3, 'Início do desvio', 13, 'Mão de Obra', '', '2023-06-02 02:01:18', NULL),
+(5, 1, 'Início do desvio', 22, 'Mão de Obra', '111111111111111111111', '2023-06-02 02:03:58', NULL),
+(6, 1, 'Início do desvio', 11, 'Mão de Obra', '', '2023-06-02 02:07:39', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `manutencao_desvio_tipo`
+--
+
+CREATE TABLE `manutencao_desvio_tipo` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `tipo` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Extraindo dados da tabela `manutencao_desvio_tipo`
+--
+
+INSERT INTO `manutencao_desvio_tipo` (`id`, `tipo`) VALUES
+(1, 'Mão de Obra'),
+(2, 'Meio Ambiente'),
+(3, 'Material'),
+(4, 'Máquina'),
+(5, 'Método'),
+(6, 'Meio de Medição');
 
 -- --------------------------------------------------------
 
@@ -224,7 +260,13 @@ ALTER TABLE `manutencao`
 --
 ALTER TABLE `manutencao_desvio`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_maintenance_id` (`maintenance_id`);
+  ADD KEY `fk_maintenance_id` (`manutencao_id`);
+
+--
+-- Índices para tabela `manutencao_desvio_tipo`
+--
+ALTER TABLE `manutencao_desvio_tipo`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Índices para tabela `manutencao_duracao`
@@ -277,7 +319,13 @@ ALTER TABLE `manutencao`
 -- AUTO_INCREMENT de tabela `manutencao_desvio`
 --
 ALTER TABLE `manutencao_desvio`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT de tabela `manutencao_desvio_tipo`
+--
+ALTER TABLE `manutencao_desvio_tipo`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de tabela `manutencao_duracao`
@@ -317,7 +365,7 @@ ALTER TABLE `manutencao`
 -- Limitadores para a tabela `manutencao_desvio`
 --
 ALTER TABLE `manutencao_desvio`
-  ADD CONSTRAINT `fk_maintenance_id` FOREIGN KEY (`maintenance_id`) REFERENCES `manutencao` (`id`);
+  ADD CONSTRAINT `fk_maintenance_id` FOREIGN KEY (`manutencao_id`) REFERENCES `manutencao` (`id`);
 
 --
 -- Limitadores para a tabela `manutencao_encerra`
