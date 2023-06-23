@@ -130,9 +130,6 @@
                             </ul>
                         </li>
                         <li>
-                            <a href="<?php echo BASE_URL . '/instituicao/index/' . $this->getCodInstituicao() ?>"><i class="fa fa-home"></i> Instituição</a>
-                        </li>
-                        <li>
                             <a href="<?php echo BASE_URL ?>/usuario/sair"><i class="fa fa-sign-out-alt"></i> Sair</a>
                         </li>
                     </ul>
@@ -156,7 +153,7 @@
     <!-- /#tela_sistema -->
     <!-- Inclui todos os plugins compilados (abaixo), ou inclua arquivos separadados se necessário -->
     <script src="<?php echo BASE_URL ?>/assets/js/bootstrap.min.js"></script>
-    <script src="<?php echo BASE_URL ?>/assets/js/jquery.mask.min.js"></script>
+    <script src="<?php echo BASE_URL ?>/assets/js/jquery.maskedinput.min.js"></script>
     <script src="<?php echo BASE_URL ?>/assets/js/sig.js"></script>
 </body>
 

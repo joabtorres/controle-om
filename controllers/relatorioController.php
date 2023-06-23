@@ -34,7 +34,6 @@ class relatorioController extends controller
         if ($this->checkUser() >= 2) {
             $view = "manutencao/relatorio";
             $dados = array();
-            $alunoModel = new aluno();
             $crudModel = new crud_db();
             $dados['celula'] = $crudModel->read("SELECT * FROM celula");
             $dados['status'] = $crudModel->read("SELECT * FROM manutencao_status");
@@ -128,27 +127,9 @@ class relatorioController extends controller
                     $campos_buscar['por'] = 'Todos';
                     $campos_buscar['campo'] = '';
                 }
-                $dados['manutencao'] = $alunoModel->read($sql, $filtro);
-                //modo de exebição
-                $dados['modo_exebicao'] = $_POST['nModoExibicao'];
-
-                if ($_POST['nModoPDF'] == 1) {
-                    $viewPDF = "aluno/relatorio_pdf";
-                    $dadosPDF = array();
-                    $dadosPDF['busca'] = $campos_buscar;
-                    $dadosPDF['cidade'] = $crudModel->read_specific('SELECT * FROM instituicao WHERE cod=:cod', array('cod' => $this->getCodInstituicao()));
-                    $dadosPDF['manutencao'] = $dados['alunos'];
-                    ob_start();
-                    $this->loadView($viewPDF, $dadosPDF);
-                    $html = ob_get_contents();
-                    ob_end_clean();
-                    $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => 'A4-L']);
-                    $mpdf->WriteHTML($html);
-                    $arquivo = 'manutencao' . date('d_m_Y.') . 'pdf';
-                    $mpdf->Output($arquivo, 'I');
-                }
+                $dados['manutencao'] = $crudModel->read($sql, $filtro);
             } else {
-                $dados['manutencao'] = $alunoModel->read('SELECT m.*, s.status, s.class_color FROM manutencao AS m INNER JOIN manutencao_status AS s WHERE m.status_id=s.id ORDER BY m.id DESC');
+                $dados['manutencao'] = $crudModel->read('SELECT m.*, s.status, s.class_color FROM manutencao AS m INNER JOIN manutencao_status AS s WHERE m.status_id=s.id ORDER BY m.id DESC');
             }
             $this->loadTemplate($view, $dados);
         } else {

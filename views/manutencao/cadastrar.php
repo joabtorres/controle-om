@@ -28,7 +28,7 @@
                         <div class="row">
                             <div class="col-md-8 form-group <?php echo (isset($formCad_error['ordem_manutencao']['class'])) ? $formCad_error['ordem_manutencao']['class'] : ''; ?>">
                                 <label for="iNumero" class="control-label">Número da Ordem de Manutenção:* <?php echo (isset($formCad_error['ordem_manutencao']['msg'])) ? '<small><span class = "glyphicon glyphicon-remove"></span> ' . $formCad_error['ordem_manutencao']['msg'] . ' </small>' : ''; ?></label>
-                                <input type="text" id="iNumero" name="nNumero" placeholder="Exemplo: João da Silva Alves" class="form-control" value="<?php echo (!empty($formCad['manutencao'])) ? $formCad['manutencao'] : ''; ?>" />
+                                <input type="text" id="iNumero" name="nNumero" placeholder="Exemplo: ..." class="form-control" value="<?php echo (!empty($formCad['manutencao'])) ? $formCad['manutencao'] : ''; ?>" />
                             </div>
                             <div class="col-md-4 form-group <?php echo (isset($formCad_error['status']['class'])) ? $formCad_error['status']['class'] : ''; ?>">
                                 <label for="iStatus" class="control-label">Status:* <?php echo (isset($formCad_error['status']['msg'])) ? '<small><span class = "glyphicon glyphicon-remove"></span> ' . $formCad_error['status']['msg'] . ' </small>' : ''; ?></label><br />

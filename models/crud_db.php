@@ -123,6 +123,7 @@ class crud_db extends model {
             $sql->execute();
             return true;
         } catch (PDOException $ex) {
+            return false;
             echo '<script> alert("Mensagem: ' . $ex->getMessage() . '")</script>';
         }
     }

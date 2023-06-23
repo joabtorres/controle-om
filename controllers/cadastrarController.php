@@ -147,6 +147,52 @@ class cadastrarController extends controller
             header("Location: " . $url);
         }
     }
+    public function encerrar($cod)
+    {
+        if ($this->checkUser()) {
+            $viewName = "manutencao/encerrar/cadastrar";
+            $dados = array();
+            $crudModel = new crud_db();
+            $id = filter_var($cod, FILTER_SANITIZE_SPECIAL_CHARS);
+            $aluno = $crudModel->read_specific("SELECT m.*, s.status, s.class_color FROM manutencao AS m INNER JOIN manutencao_status AS s WHERE m.status_id=s.id AND m.id=:id", ['id' => $id]);
+            if (!is_array($aluno) && empty($aluno)) {
+                $url = BASE_URL . '/home';
+                header("Location: " . $url);
+            }
+            $dados['manutencao'] = $aluno;
+            if (isset($_POST['nSalvar']) && !empty($_POST['nSalvar'])) {
+                $arrayCad = array();
+                $arrayCad['manutencao_id'] =  filter_input(INPUT_POST, "nId", FILTER_VALIDATE_INT);
+                $arrayCad['ordem'] =  filter_input(INPUT_POST, "nOrdem", FILTER_SANITIZE_SPECIAL_CHARS);
+                if (!empty($_POST['nDuracao']) && isset($_POST['nDuracao'])) {
+                    $arrayCad['duracao'] = $_POST['nDuracao'];
+                } else {
+                    $dados['formCad_error']['duracao']['msg'] = 'Informe a duração ';
+                    $dados['formCad_error']['duracao']['class'] = 'has-error';
+                }
+                $arrayCad['descricao'] =  filter_input(INPUT_POST, "nDescricao", FILTER_SANITIZE_SPECIAL_CHARS);
+                $dados['formCad'] = $arrayCad;
+                if (isset($dados['formCad_error']) && !empty($dados['formCad_error'])) {
+                    $dados['erro'] = array('class' => 'alert-danger', 'msg' => ' <span class = "glyphicon glyphicon-remove"></span> Preenchar os campos obrigatórios.');
+                } else {
+                    $resultado = $crudModel->create("INSERT INTO manutencao_encerra (manutencao_id, ordem, duracao, descricao) VALUES (:manutencao_id, :ordem, :duracao, :descricao)", $arrayCad);
+                    if ($resultado) {
+                        $crudModel->update("UPDATE manutencao SET status_id=5 WHERE id=:id", array("id" => $arrayCad['manutencao_id']));
+                        $_SESSION['tipo_acao'] = true;
+                        $url = BASE_URL . '/cadastrar/encerrar/' . $cod;
+                        header("Location: " . $url);
+                    }
+                }
+            } else if (isset($_SESSION['tipo_acao']) && !empty($_SESSION['tipo_acao'])) {
+                $_SESSION['tipo_acao'] = false;
+                $dados['erro'] = array('class' => 'alert-success', 'msg' => "<span class = 'glyphicon glyphicon-ok'></span> Cadastro realizado com sucesso!");
+            }
+            $this->loadTemplate($viewName, $dados);
+        } else {
+            $url = BASE_URL . '/home';
+            header("Location: " . $url);
+        }
+    }
 
     /**
      * Está função pertence a uma action do controle MVC, ela é responśavel pelo controle nas ações de cadastra usuario e valida os campus preenchidos via formulário.

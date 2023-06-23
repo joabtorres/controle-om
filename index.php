@@ -2,7 +2,6 @@
 session_start();
 header('Cache-Control: no cache');
 require 'config.php';
-require 'vendor/autoload.php';
 
 spl_autoload_register(function ($class) {
     if (strpos($class, 'Controller') > -1) {
@@ -18,4 +17,3 @@ spl_autoload_register(function ($class) {
 
 $core = new core();
 $core->run();
-?>

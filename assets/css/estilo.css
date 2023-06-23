@@ -78,10 +78,35 @@ form label {
 .oculta {
    display: none;
 }
-.bg-success {
-   background-color: rgb(50, 179, 51);
-   color: white;
+.bg-primary {
+   background-color: #007bff;
+   color: #fff;
 }
+.bg-info {
+   background-color: #17a2b8;
+   color: #fff;
+}
+.bg-success {
+   background-color: #28a745;
+   color: #fff;
+}
+.bg-warning {
+   background-color: #ffc107;
+   color: #fff;
+}
+.bg-danger {
+   background-color: #dc3545;
+   color: #fff;
+}
+.bg-dark {
+   background-color: #343a40;
+   color: #fff;
+}
+.bg-secondary {
+   background-color: #6c757d;
+   color: #fff;
+}
+
 .title_sublinha {
    border-bottom: 1px solid #cecece;
 }
@@ -454,25 +479,7 @@ form label {
    min-width: 100%;
    max-width: 100%;
 }
-/* CADASTRAR */
-#viewMapa {
-   width: 100%;
-   height: 280px;
-}
-#viewMapa2 {
-   min-height: 250px;
-   width: 100%;
-}
-/*container cad cooperado*/
-#formAluno #cFileImagem {
-   display: none;
-}
-#formAluno img {
-   width: 150px;
-   height: 200px;
-   border: 3px solid #2f4554;
-   margin-bottom: 5px;
-}
+
 /*CONTAINER-USUARIO*/
 #container-usuario-form input[type="file"] {
    display: none;

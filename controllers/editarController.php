@@ -93,93 +93,50 @@ class EditarController extends controller
             header("Location: " . $url);
         }
     }
-
-    /**
-     * Está função pertence a uma action do controle MVC, ela é responśavel pelo controlle nas ações de edição no cooperado  e valida os campus preenchidos via formulário.
-     * @param int $cod _cooperado- código do cooperado registrada no banco
-     * @access public
-     * @author Joab Torres <joabtorres1508@gmail.com>
-     */
-    public function avaliacao_fisica($cod)
+    public function desvio($cod)
     {
-        if ($this->checkUser() >= 2) {
-            $viewName = "aluno/avaliacao_fisica/editar";
+        if ($this->checkUser()) {
+            $viewName = "manutencao/desvio/editar";
             $dados = array();
             $crudModel = new crud_db();
-            $avaliacao = $crudModel->read_specific("SELECT * FROM avaliacao_fisica WHERE cod=:cod", array('cod' => $cod));
-            if (!is_array($avaliacao) && empty($avaliacao)) {
+            $id = filter_var($cod, FILTER_SANITIZE_SPECIAL_CHARS);
+            $resultado = $crudModel->read_specific("SELECT * FROM manutencao_desvio WHERE id =:id", ["id" => $id]);
+            if (!is_array($resultado) && empty($resultado)) {
                 $url = BASE_URL . '/home';
                 header("Location: " . $url);
             }
-            $aluno = $crudModel->read_specific("SELECT a.*, t.turma, t.curso FROM aluno as a INNER JOIN turma as t WHERE t.cod=a.cod_turma AND a.cod=:cod", array('cod' => $avaliacao['cod_aluno']));
-            $dados['aluno'] = $aluno;
-            $dados['formCad'] = $avaliacao;
+            $aluno = $crudModel->read_specific("SELECT m.*, s.status, s.class_color FROM manutencao AS m INNER JOIN manutencao_status AS s WHERE m.status_id=s.id AND m.id=:id", ['id' => $resultado['manutencao_id']]);
+            $dados['manutencao'] = $aluno;
+            $dados['formCad'] = $resultado;
+            $dados['tipo'] = $crudModel->read("SELECT * FROM manutencao_desvio_tipo");
             if (isset($_POST['nSalvar']) && !empty($_POST['nSalvar'])) {
                 $arrayCad = array();
-                //npeso
-                $arrayCad['cod'] = $cod; //cod
-                $arrayCad['cod_aluno'] = isset($_POST['nCodAluno']) ? $_POST['nCodAluno'] : ''; //cod aluno
-                if (!empty($_POST['nData']) && isset($_POST['nData'])) { //data
-                    $arrayCad['data'] = $this->formatDateBD($_POST['nData']);
+                $arrayCad['id'] = $resultado['id'];
+                $arrayCad['manutencao_id'] =  filter_input(INPUT_POST, "nId", FILTER_VALIDATE_INT);
+                $arrayCad['ordem'] =  filter_input(INPUT_POST, "nOrdem", FILTER_SANITIZE_SPECIAL_CHARS);
+                if (!empty($_POST['nTipo']) && isset($_POST['nTipo'])) {
+                    $arrayCad['tipo'] = filter_input(INPUT_POST, "nTipo", FILTER_SANITIZE_SPECIAL_CHARS);
                 } else {
-                    $dados['formCad_error']['data']['msg'] = 'Informe a data';
-
-                    $dados['formCad_error']['data']['class'] = 'has-error';
+                    $dados['formCad_error']['tipo']['msg'] = 'Informe o tipo ';
+                    $dados['formCad_error']['tipo']['class'] = 'has-error';
                 }
-                if (!empty($_POST['npeso']) && isset($_POST['npeso'])) { //peso
-                    $arrayCad['peso'] = addslashes($_POST['npeso']);
+                if (!empty($_POST['nDuracao']) && isset($_POST['nDuracao'])) {
+                    $arrayCad['duracao'] = $_POST['nDuracao'];
                 } else {
-                    $dados['formCad_error']['peso']['msg'] = 'Informe o peso';
-
-                    $dados['formCad_error']['peso']['class'] = 'has-error';
+                    $dados['formCad_error']['duracao']['msg'] = 'Informe a duração ';
+                    $dados['formCad_error']['duracao']['class'] = 'has-error';
                 }
-                $arrayCad['braco_direito'] = isset($_POST['nbraco_direito']) ? $_POST['nbraco_direito'] : ''; //braco_direito
-                $arrayCad['braco_esquerdo'] = isset($_POST['nbraco_esquerdo']) ? $_POST['nbraco_esquerdo'] : ''; //braco_esquerdo
-                $arrayCad['antebraco_esquerdo'] = isset($_POST['nantebraco_esquerdo']) ? $_POST['nantebraco_esquerdo'] : ''; //antebraco_direito
-                $arrayCad['antebraco_direito'] = isset($_POST['nantebraco_direito']) ? $_POST['nantebraco_direito'] : ''; //antebraco_direito
-                $arrayCad['abdomen'] = isset($_POST['nabdomen']) ? $_POST['nabdomen'] : ''; //abdomen
-                $arrayCad['quadril'] = isset($_POST['nquadril']) ? $_POST['nquadril'] : ''; //nquadril
-                $arrayCad['cintura'] = isset($_POST['ncintura']) ? $_POST['ncintura'] : ''; //cintura
-
-                if (!empty($_POST['nfemu']) && isset($_POST['nfemu'])) { //femu
-                    $arrayCad['femu'] = addslashes($_POST['nfemu']);
-                } else {
-                    $dados['formCad_error']['femu']['msg'] = 'Informe diametro do fêmur';
-
-                    $dados['formCad_error']['femu']['class'] = 'has-error';
-                }
-                if (!empty($_POST['npunho']) && isset($_POST['npunho'])) { //punho
-                    $arrayCad['punho'] = addslashes($_POST['npunho']);
-                } else {
-                    $dados['formCad_error']['punho']['msg'] = 'Informe diametro do punho';
-
-                    $dados['formCad_error']['punho']['class'] = 'has-error';
-                }
-                $arrayCad['coxa_direita'] = isset($_POST['ncoxa_direita']) ? $_POST['ncoxa_direita'] : ''; //cintura
-                $arrayCad['coxa_esqueda'] = isset($_POST['ncoxa_esqueda']) ? $_POST['ncoxa_esqueda'] : ''; //cintura
-                $arrayCad['panturrilha_direita'] = isset($_POST['npanturrilha_direita']) ? $_POST['npanturrilha_direita'] : ''; //cintura
-                $arrayCad['panturrilha_esquerda'] = isset($_POST['npanturrilha_esquerda']) ? $_POST['npanturrilha_esquerda'] : ''; //cintura
-
-
+                $arrayCad['descricao'] =  filter_input(INPUT_POST, "nDescricao", FILTER_SANITIZE_SPECIAL_CHARS);
                 $dados['formCad'] = $arrayCad;
+
                 if (isset($dados['formCad_error']) && !empty($dados['formCad_error'])) {
                     $dados['erro'] = array('class' => 'alert-danger', 'msg' => ' <span class = "glyphicon glyphicon-remove"></span> Preenchar os campos obrigatórios.');
                 } else {
-                    //calculos == 
-                    $arrayCad['imc'] = $this->calcularIMC($arrayCad['peso'], $aluno['altura']);
-                    $percentual_gordura_corporal = $this->percentualDeGorduraCorporal($arrayCad['imc'], $this->calcularIdade($aluno['nascimento']), $aluno['genero']);
-                    $arrayCad['deficit_calorico'] = $this->calcularDeficitCalorico($aluno['genero'], $this->calcularIdade($aluno['nascimento']), $arrayCad['peso']);
-                    $arrayCad['tmb'] = $this->calcularTaxaMetabolicaBasal($aluno['genero'], $arrayCad['peso'], $aluno['altura'], $this->calcularIdade($aluno['nascimento']));
-                    $arrayCad['massa_residual'] = $this->calcularMassaResidual($arrayCad['peso'], $aluno['genero']);
-                    $arrayCad['massa_magra'] = $this->calcularMassaMagra($arrayCad['peso'], $percentual_gordura_corporal);
-                    $arrayCad['massa_gorda'] = $this->calcularMassaGorda($arrayCad['peso'], $percentual_gordura_corporal);
-                    $arrayCad['massa_ossea'] = $this->calcularMassaOssea($aluno['altura'], $arrayCad['punho'], $arrayCad['femu']);
-                    $arrayCad['massa_muscular'] = $this->calcularMassaMuscular($arrayCad['peso'], $arrayCad['massa_gorda'], $arrayCad['massa_ossea'], $arrayCad['massa_residual']);
-
-                    $resultado = $crudModel->create('UPDATE avaliacao_fisica SET cod_aluno=:cod_aluno, data=:data, peso=:peso, braco_direito=:braco_direito, braco_esquerdo=:braco_esquerdo, antebraco_direito=:antebraco_direito, antebraco_esquerdo=:antebraco_esquerdo, abdomen=:abdomen, quadril=:quadril, cintura=:cintura, femu=:femu, punho=:punho, coxa_direita=:coxa_direita, coxa_esqueda=:coxa_esqueda, panturrilha_direita=:panturrilha_direita, panturrilha_esquerda=:panturrilha_esquerda, imc=:imc, deficit_calorico=:deficit_calorico, tmb=:tmb, massa_residual=:massa_residual, massa_ossea=:massa_ossea, massa_muscular=:massa_muscular, massa_magra=:massa_magra, massa_gorda=:massa_gorda WHERE cod=:cod', $arrayCad);
+                    $resultado = $crudModel->update("UPDATE manutencao_desvio SET manutencao_id=:manutencao_id, ordem=:ordem, tipo=:tipo, duracao=:duracao, descricao=:descricao WHERE id=:id", $arrayCad);
                     if ($resultado) {
+                        $crudModel->update("UPDATE manutencao SET status_id=3 WHERE id=:id", array("id" => $arrayCad['manutencao_id']));
                         $_SESSION['tipo_acao'] = true;
-                        $url = BASE_URL . '/editar/avaliacao_fisica/' . $cod;
+                        $url = BASE_URL . '/editar/desvio/' . $cod;
                         header("Location: " . $url);
                     }
                 }
@@ -193,49 +150,48 @@ class EditarController extends controller
             header("Location: " . $url);
         }
     }
-
-    /**
-     * Está função pertence a uma action do controle MVC, ela é responśavel pelo controlle nas ações de editar uma turma e valida os campus preenchidos via formulário.
-     * @param int $cod - código do lucro registrada no banco
-     * @access public
-     * @author Joab Torres <joabtorres1508@gmail.com>
-     */
-    public function turma($cod)
+    public function encerrar($cod)
     {
-        if ($this->checkUser() >= 2 && intval($cod) > 0) {
-            $viewName = "turma/editar";
+        if ($this->checkUser()) {
+            $viewName = "manutencao/encerrar/editar";
             $dados = array();
             $crudModel = new crud_db();
-            $result_db = $crudModel->read('SELECT * FROM turma WHERE cod=:cod', array('cod' => $cod));
-            $dados['cadForm'] = array(
-                'cod' => $result_db[0]['cod'],
-                'cod_instituicao' => $result_db[0]['cod_instituicao'],
-                'turma' => $result_db[0]['turma'],
-                'curso' => $result_db[0]['turma'],
-                'ano' => $result_db[0]['ano']
-            );
+            $id = filter_var($cod, FILTER_SANITIZE_SPECIAL_CHARS);
+            $resultado = $crudModel->read_specific("SELECT * FROM manutencao_encerra WHERE id=:id", ["id" => $id]);
+            if (!is_array($resultado) && empty($resultado)) {
+                $url = BASE_URL . '/home';
+                header("Location: " . $url);
+            }
+            $aluno = $crudModel->read_specific("SELECT m.*, s.status, s.class_color FROM manutencao AS m INNER JOIN manutencao_status AS s WHERE m.status_id=s.id AND m.id=:id", ['id' => $resultado['manutencao_id']]);
+            $dados['manutencao'] = $aluno;
+            $dados['formCad'] = $resultado;
+            $dados['manutencao'] = $aluno;
             if (isset($_POST['nSalvar']) && !empty($_POST['nSalvar'])) {
-                /* Adicionando */
-                $ArrayCad = array(
-                    'cod' => addslashes($_POST['nCod']),
-                    'cod_instituicao' => $this->getCodInstituicao(),
-                    'curso' => addslashes($_POST['nCurso']),
-                    'turma' => addslashes($_POST['nTuma']),
-                    'ano' => addslashes($_POST['nAno']),
-                );
-                $dados['cadForm'] = $ArrayCad;
-                if (!empty($_POST['nTuma']) && !empty($_POST['nAno'])) {
-                    $resultado = $crudModel->update('UPDATE turma SET cod_instituicao=:cod_instituicao, curso=:curso, turma=:turma, ano=:ano WHERE cod=:cod', $ArrayCad);
+                $arrayCad = array();
+                $arrayCad['id'] = $resultado['id'];
+                $arrayCad['manutencao_id'] =  filter_input(INPUT_POST, "nId", FILTER_VALIDATE_INT);
+                $arrayCad['ordem'] =  filter_input(INPUT_POST, "nOrdem", FILTER_SANITIZE_SPECIAL_CHARS);
+                if (!empty($_POST['nDuracao']) && isset($_POST['nDuracao'])) {
+                    $arrayCad['duracao'] = $_POST['nDuracao'];
+                } else {
+                    $dados['formCad_error']['duracao']['msg'] = 'Informe a duração ';
+                    $dados['formCad_error']['duracao']['class'] = 'has-error';
+                }
+                $arrayCad['descricao'] =  filter_input(INPUT_POST, "nDescricao", FILTER_SANITIZE_SPECIAL_CHARS);
+                $dados['formCad'] = $arrayCad;
+                if (isset($dados['formCad_error']) && !empty($dados['formCad_error'])) {
+                    $dados['erro'] = array('class' => 'alert-danger', 'msg' => ' <span class = "glyphicon glyphicon-remove"></span> Preenchar os campos obrigatórios.');
+                } else {
+                    $resultado = $crudModel->update("UPDATE manutencao_encerra SET manutencao_id=:manutencao_id, ordem=:ordem, duracao=:duracao, descricao=:descricao WHERE id=:id", $arrayCad);
                     if ($resultado) {
-                        $_SESSION['financa_acao'] = true;
-                        $url = BASE_URL . "/editar/turma/" . $cod;
+                        $crudModel->update("UPDATE manutencao SET status_id=5 WHERE id=:id", array("id" => $arrayCad['manutencao_id']));
+                        $_SESSION['tipo_acao'] = true;
+                        $url = BASE_URL . '/editar/encerrar/' . $cod;
                         header("Location: " . $url);
                     }
-                } else {
-                    $dados['erro'] = array('class' => 'alert-danger', 'msg' => "Preenchar os campos obrigatórios.");
                 }
-            } else if (isset($_SESSION['financa_acao']) && !empty($_SESSION['financa_acao'])) {
-                $_SESSION['financa_acao'] = false;
+            } else if (isset($_SESSION['tipo_acao']) && !empty($_SESSION['tipo_acao'])) {
+                $_SESSION['tipo_acao'] = false;
                 $dados['erro'] = array('class' => 'alert-success', 'msg' => "<span class = 'glyphicon glyphicon-ok'></span> Alteração realizada com sucesso!");
             }
             $this->loadTemplate($viewName, $dados);
@@ -244,7 +200,6 @@ class EditarController extends controller
             header("Location: " . $url);
         }
     }
-
     /**
      * Está função pertence a uma action do controle MVC, ela é responśavel pelo controle nas ações de editar usuario e valida os campus preenchidos via formulário.
      * @param int $cod - código do usuario registrada no banco

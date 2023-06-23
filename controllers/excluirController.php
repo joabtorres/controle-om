@@ -10,14 +10,16 @@
  * @package controllers
  * @example classe excluirController
  */
-class excluirController extends controller {
+class excluirController extends controller
+{
 
     /**
      * Está função pertence a uma action do controle MVC, ela é chama a função cooperado();
      * @access public
      * @author Joab Torres <joabtorres1508@gmail.com>
      */
-    public function index($cod) {
+    public function index($cod)
+    {
         $this->aluno($cod);
     }
 
@@ -27,14 +29,14 @@ class excluirController extends controller {
      * @access public
      * @author Joab Torres <joabtorres1508@gmail.com>
      */
-    public function aluno($cod) {
-        if ($this->checkUser() >= 3 && intval($cod) > 0) {
-            $coopeadoModel = new aluno();
-            $aluno = $coopeadoModel->read_specific('SELECT * FROM aluno WHERE cod =:cod AND cod_instituicao=:cod_instituicao', array('cod' => addslashes($cod), 'cod_instituicao' => $this->getCodInstituicao()));
-            $coopeadoModel->delete_image($aluno['imagem']);
-            $coopeadoModel->remove("DELETE FROM avaliacao_fisica WHERE cod_aluno=:cod", array('cod' => addslashes($cod)));
-            $coopeadoModel->remove("DELETE FROM aluno WHERE cod=:cod", array('cod' => addslashes($cod)));
-            $url = BASE_URL . "/relatorio/aluno";
+    public function aluno($cod)
+    {
+        if ($this->checkUser()) {
+            $crudModel = new crud_db();
+            $crudModel->remove("DELETE FROM manutencao_desvio WHERE manutencao_id=:cod", array('cod' => addslashes($cod)));
+            $crudModel->remove("DELETE FROM manutencao_encerra WHERE manutencao_id=:cod", array('cod' => addslashes($cod)));
+            $crudModel->remove("DELETE FROM manutencao WHERE id=:cod", array('cod' => addslashes($cod)));
+            $url = BASE_URL . "/relatorio/manutencao";
             header("Location: " . $url);
         } else {
             $url = BASE_URL . '/home';
@@ -45,17 +47,18 @@ class excluirController extends controller {
     /**
      * Está função pertence a uma action do controle MVC, ela é responśavel pelo controlle nas ações de excluir avaliação fisica.
      * @access public
-     * @param int $cod_aluno - código do historico registrada no banco
+     * @param int $cod_manutencao - código do historico registrada no banco
      * @param int $cod - código do historico registrada no banco
      * @author Joab Torres <joabtorres1508@gmail.com>
      */
-    public function avaliacao_fisica($cod_aluno, $cod) {
-        if ($this->checkUser() >= 3 && intval($cod) > 0) {
+    public function desvio($cod_manutencao, $cod)
+    {
+        if ($this->checkUser()) {
             $crudModel = new crud_db();
-            $resultado = $crudModel->remove("DELETE FROM avaliacao_fisica WHERE cod=:cod", array('cod' => addslashes($cod)));
+            $resultado = $crudModel->remove("DELETE FROM manutencao_desvio WHERE id=:cod", array('cod' => addslashes($cod)));
             if ($resultado) {
-                $url = BASE_URL . "/aluno/index/" . $cod_aluno;
-                header("Location: " . $url);
+                $url = BASE_URL . "/manutencao/index/{$cod_manutencao}";
+                header("Location: {$url}");
             }
         } else {
             $url = BASE_URL . '/home';
@@ -69,23 +72,14 @@ class excluirController extends controller {
      * @access public
      * @author Joab Torres <joabtorres1508@gmail.com>
      */
-    public function turma($cod) {
-        if ($this->checkUser() >= 3 && intval($cod) > 0) {
+    public function encerrar($cod_manutencao, $cod)
+    {
+        if ($this->checkUser()) {
             $crudModel = new crud_db();
-            $alunoModel = new aluno();
-            $alunos = $alunoModel->read('SELECT * FROM aluno WHERE cod_turma =:cod and cod_instituicao=:cod_instituicao', array('cod' => addslashes($cod), 'cod_instituicao' => $this->getCodInstituicao()));
-            if (!empty($alunos)) {
-                foreach ($alunos as $index) {
-                    $alunoModel->delete_image($index['imagem']);
-                    $alunoModel->remove("DELETE FROM avaliacao_fisica WHERE cod_aluno=:cod", array('cod' => $index['cod']));
-                }
-            }
-            $alunoModel->remove("DELETE FROM aluno WHERE cod_turma=:cod and cod_instituicao=:cod_instituicao", array('cod' => addslashes($cod), 'cod_instituicao' => $this->getCodInstituicao()));
-            $removeFinanca = $crudModel->remove("DELETE FROM turma WHERE cod=:cod and cod_instituicao=:cod_instituicao", array('cod' => addslashes($cod), 'cod_instituicao' => $this->getCodInstituicao()));
-            if ($removeFinanca) {
-                $_SESSION['financa_atual'] = array();
-                $url = BASE_URL . "/relatorio/turma";
-                header("Location: " . $url);
+            $resultado = $crudModel->remove("DELETE FROM manutencao_encerra WHERE id=:cod", array('cod' => addslashes($cod)));
+            if ($resultado) {
+                $url = BASE_URL . "/manutencao/index/{$cod_manutencao}";
+                header("Location: {$url}");
             }
         } else {
             $url = BASE_URL . '/home';
@@ -99,8 +93,9 @@ class excluirController extends controller {
      * @access public
      * @author Joab Torres <joabtorres1508@gmail.com>
      */
-    public function usuario($cod_usuario) {
-        if ($this->checkUser() >= 3 && intval($cod_usuario) > 0) {
+    public function usuario($cod_usuario)
+    {
+        if ($this->checkUser()) {
             $usuarioModel = new usuario();
             $usuarioModel->remove(array('cod' => addslashes($cod_usuario)));
             $url = BASE_URL . "/usuario/index";
@@ -110,5 +105,4 @@ class excluirController extends controller {
             header("Location: " . $url);
         }
     }
-
 }

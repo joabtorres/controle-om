@@ -1,12 +1,12 @@
 <div id="section-container">
     <div class="row">
         <div class="col-sm-12 col-md-12 col-lg-12" id="pagina-header">
-            <h2>Editar Desvio</h2>
+            <h2>Encerrar Ordem de Manutenção</h2>
             <ol class="breadcrumb">
                 <li><a href="<?php echo BASE_URL ?>/home"><i class="fa fa-tachometer-alt"></i> Inicial</a></li>
                 <li><a href="<?php echo BASE_URL ?>/relatorio/manutencao"><i class="fa fa-list-alt"></i> Relatório de Ordem de Manutenção</a></li>
                 <li><a href="<?php echo BASE_URL ?>/manutencao/index/<?php echo !empty($manutencao['id']) ? $manutencao['id'] : '' ?>"><i class="fas fa-cogs"></i> <?php echo !empty($manutencao['id']) ? "Nº: " . str_pad($manutencao['id'], 4, '0', STR_PAD_LEFT) : '' ?></a></li>
-                <li class="active"><i class="fa fa-plus-square"></i> Editar Desvio</li>
+                <li class="active"><i class="fa fa-edit"></i> Encerrar Ordem de Manutenção</li>
             </ol>
         </div>
     </div>
@@ -19,7 +19,7 @@
             </div>
         </div>
         <div class="col-md-12 clear">
-            <form autocomplete="off" method="POST">
+            <form autocomplete="off" method="POST" id="myFormFinanca">
                 <input name="nId" type="hidden" value="<?= (!empty($manutencao['id'])) ? $manutencao['id'] : '' ?>">
                 <section class="panel panel-black">
                     <header class="panel-heading">
@@ -32,9 +32,10 @@
                                 <input type="text" id="iNumero" name="nNumero" placeholder="Exemplo: João da Silva Alves" class="form-control" value="<?php echo (!empty($manutencao['manutencao'])) ? $manutencao['manutencao'] : ''; ?>" disabled='disabled' />
                             </div>
                             <div class="col-md-12 form-group">
+                                <label>Houve desvio?</label> <br />
                                 <?php
                                 if (!empty($formCad['ordem'])) {
-                                    $arrayType = ['Início do desvio', 'Fim do desvio'];
+                                    $arrayType = ['Sim', 'Não'];
                                     for ($i = 0; $i < count($arrayType); $i++) {
                                         if (!empty($formCad['ordem']) && $formCad['ordem'] == $arrayType[$i]) {
                                             echo "<label><input type='radio' name='nOrdem' value='{$arrayType[$i]}' checked/> {$arrayType[$i]}</label>";
@@ -43,26 +44,12 @@
                                         }
                                     }
                                 } else {
-                                    echo '<label><input type="radio" name="nOrdem" value="Início do desvio" checked/> Início do desvio</label> ';
-                                    echo '<label><input type="radio" name="nOrdem" value="Fim do desvio"/> Fim do desvio</label>';
+                                    echo '<label><input type="radio" name="nOrdem" value="Sim" checked/>Sim</label> ';
+                                    echo '<label><input type="radio" name="nOrdem" value="Não"/>Não</label>';
                                 }
                                 ?>
                             </div>
-                            <div class="col-md-6 form-group <?php echo (isset($formCad_error['tipo']['class'])) ? $formCad_error['tipo']['class'] : ''; ?>">
-                                <label for="iTipo" class="control-label">Tipo de Desvio:* <?php echo (isset($formCad_error['tipo']['msg'])) ? '<small><span class = "glyphicon glyphicon-remove"></span> ' . $formCad_error['tipo']['msg'] . ' </small>' : ''; ?></label><br />
-                                <select id="iTipo" name="nTipo" class="form-control">
-                                    <?php
-                                    foreach ($tipo as $index) {
-                                        if (isset($formCad['tipo']) && $index['tipo'] == $formCad['tipo']) {
-                                            echo "<option value='{$index['tipo']}' selected='selected'>{$index['tipo']}</option>";
-                                        } else {
-                                            echo "<option value='{$index['tipo']}'>{$index['tipo']}</option>";
-                                        }
-                                    }
-                                    ?>
-                                </select>
-                            </div>
-                            <div class="col-md-6 form-group <?php echo (isset($formCad_error['duracao']['class'])) ? $formCad_error['duracao']['class'] : ''; ?>">
+                            <div class="col-md-12 form-group <?php echo (isset($formCad_error['duracao']['class'])) ? $formCad_error['duracao']['class'] : ''; ?>">
                                 <label for="iDuiracao" class="control-label">Duração:* <?php echo (isset($formCad_error['duracao']['msg'])) ? '<small><span class = "glyphicon glyphicon-remove"></span> ' . $formCad_error['duracao']['msg'] . ' </small>' : ''; ?></label>
                                 <input type="text" id="iDuiracao" name="nDuracao" placeholder="Exemplo: 01:00:00" class="form-control input-hora" value="<?php echo (!empty($formCad['duracao'])) ? $formCad['duracao'] : ''; ?>" />
                             </div>

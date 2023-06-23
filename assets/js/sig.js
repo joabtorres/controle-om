@@ -24,8 +24,8 @@ function mostrarConteudo() {
  */
 $(document).ready(function () {
    mostrarConteudo();
-   $(".input-data").mask("00/00/0000");
-   $(".input-hora").mask("00:00:00");
+   $(".input-data").mask("99/99/9999");
+   $(".input-hora").mask("99:99:99");
 });
 /**
  * @author Joab Torres Alencar
@@ -82,73 +82,4 @@ if (document.getElementById("container-usuario-form")) {
          $("#iImagem-user").val(null);
       }
    };
-}
-
-/**
- * @author Joab Torres <joabtorres1508@gmail.com>
- * @description Este codigo abaixo é responsável para fazer o carregamento da imagem setada pelo usuário ao muda a foto do perfil
- */
-
-if (document.getElementById("formAluno")) {
-   readURL = function (input) {
-      if (input.files && input.files[0]) {
-         var reader = new FileReader();
-         var num = input.name.replace("tImagem-", "");
-         reader.onload = function (e) {
-            $("#viewImagem-" + num).attr("src", e.target.result);
-         };
-         reader.readAsDataURL(input.files[0]);
-      }
-   };
-   function validarCampo(valor, name) {
-      if (valor === "Não") {
-         $("input[name='" + name + "']").attr("disabled", "true");
-      } else {
-         $("input[name='" + name + "']").removeAttr("disabled", "true");
-      }
-   }
-   $(document).ready(function () {
-      //ao carregar a página
-      validarCampo($("input[name='nAlergia']:checked").val(), "nQualAlergia");
-      validarCampo($("input[name='nDoenca']:checked").val(), "nQualDoenca");
-      validarCampo(
-         $("input[name='nDoencaFamilia']:checked").val(),
-         "nQualDoencaFamilia"
-      );
-      validarCampo($("input[name='nLesao']:checked").val(), "nQualLesao");
-      validarCampo(
-         $("input[name='nMedicamento']:checked").val(),
-         "nQualMedicamento"
-      );
-      validarCampo(
-         $("input[name='nAtividadeFisica']:checked").val(),
-         "nQualAtividadeFisica"
-      );
-      validarCampo(
-         $("input[name='nSuplemento']:checked").val(),
-         "nQualSuplemento"
-      );
-      //ao clicar
-      $("input[name='nAlergia']").click(function () {
-         validarCampo(this.value, "nQualAlergia");
-      });
-      $("input[name='nDoenca']").click(function () {
-         validarCampo(this.value, "nQualDoenca");
-      });
-      $("input[name='nDoencaFamilia']").click(function () {
-         validarCampo(this.value, "nQualDoencaFamilia");
-      });
-      $("input[name='nLesao']").click(function () {
-         validarCampo(this.value, "nQualLesao");
-      });
-      $("input[name='nMedicamento']").click(function () {
-         validarCampo(this.value, "nQualMedicamento");
-      });
-      $("input[name='nAtividadeFisica']").click(function () {
-         validarCampo(this.value, "nQualAtividadeFisica");
-      });
-      $("input[name='nSuplemento']").click(function () {
-         validarCampo(this.value, "nQualSuplemento");
-      });
-   });
 }

@@ -52,19 +52,11 @@
                                     <select id="iPor" name="nPor" class="form-control">
                                         <option value="" selected='selected'>Todos</option>
                                         <option value="manuntecao">Número de Ordem de Manutenção </option>
-                                        <option value="responsavel">Fumante</option>
                                     </select>
                                 </div>
                                 <div class="col-md-3 form-group">
                                     <label for='iBuscar'>Buscar: </label>
                                     <input type="text" id="iBuscar" name="nBuscar" class="form-control" />
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-6 form-group">
-                                    <label>Gerar PDF:</label><br />
-                                    <label><input type="radio" name="nModoPDF" value="0" checked="checked" /> Não </label>
-                                    <label><input type="radio" name="nModoPDF" value="1" /> Sim </label>
                                 </div>
                             </div>
                             <div class="row">
@@ -204,10 +196,11 @@ if (isset($manutencao) && is_array($manutencao)) :
                     </header>
                     <article class="modal-body">
                         <ul class="list-unstyled">
-                            <li><b>Nº de Matricula: </b> <?php echo !empty($indice['id']) ? str_pad($indice['id'], 3, '0', STR_PAD_LEFT) : '' ?>;</li>
-                            <li><b>Nome: </b> <?php echo !empty($indice['nome']) ? $indice['nome'] : '' ?>;</li>
-                            <li><b>Idade: </b> <?php echo !empty($indice['nascimento']) ? $this->calcularIdade($indice['nascimento']) : '' ?>;</li>
-                            <li><b>Turma: </b> <?php echo !empty($indice['turma']) ? $indice['turma'] : '' ?>.</li>
+                            <li><b>Número da Ordem de Manutenção: </b> <?php echo !empty($indice['manutencao']) ? str_pad($indice['manutencao'], 3, '0', STR_PAD_LEFT) : '' ?>;</li>
+                            <li><b>Stattus: </b> <?= !empty($indice['status']) ? "<span class='{$indice['class_color']} p-4'>{$indice['status']}</span>" : '' ?>;</li>
+                            <li><b>Célula:</b> <?php echo !empty($indice['celula']) ? $indice['celula'] : '' ?>;</li>
+                            <li><b>Responsável:</b> <?php echo !empty($indice['responsavel']) ? $indice['responsavel'] : '' ?>.</li>
+                            <li><b>Duração:</b> <?php echo !empty($indice['duracao']) ? $indice['duracao'] : '' ?>.</li>
                         </ul>
                         <p class="text-justify text-danger"><span class="font-bold">OBS : </span> Se você remove o cooperado, será removido todos os respectivos dados como, por exemplo, endereço, contato e históricos.</p>
                     </article>

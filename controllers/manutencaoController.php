@@ -29,6 +29,7 @@ class manutencaoController extends controller
             $manutencao = $crudModel->read_specific("SELECT m.*, s.status, s.class_color FROM manutencao AS m INNER JOIN manutencao_status AS s WHERE m.status_id=s.id AND m.id=:id", ['id' => $id]);
             if (!empty($manutencao)) {
                 $manutencao['desvio'] = $crudModel->read("SELECT * FROM manutencao_desvio WHERE manutencao_id='{$manutencao['id']}'");
+                $manutencao['encerrar'] = $crudModel->read("SELECT * FROM manutencao_encerra WHERE manutencao_id='{$manutencao['id']}'");
                 $dados['manutencao'] = $manutencao;
             } else {
                 $url = "location: " . BASE_URL . "/home";
